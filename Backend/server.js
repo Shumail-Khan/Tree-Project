@@ -18,9 +18,9 @@ app.use(express.json());
 // Fixed CORS configuration - remove trailing slash from origin
 app.use(cors({
     origin: `${process.env.FrontEnd_URL}`,
-    withCredentials: true,
+    // withCredentials: true,
     credentials: true,
-    accessControlAllowCredentials: true
+    // accessControlAllowCredentials: true
 }));
 
 // accept form data
@@ -42,6 +42,7 @@ app.use('/api/dashboard/', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 
 
+console.log("Backend URL:", process.env.FrontEnd_URL);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
