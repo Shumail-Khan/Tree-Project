@@ -18,9 +18,9 @@ app.use(express.json());
 // Fixed CORS configuration - remove trailing slash from origin
 app.use(cors({
     origin: `${process.env.FrontEnd_URL}`,
-    // withCredentials: true,
+    withCredentials: true,
     credentials: true,
-    // accessControlAllowCredentials: true
+    accessControlAllowCredentials: true
 }));
 
 // accept form data
