@@ -37,7 +37,7 @@ import CategoryBlogs from "./Pages/CategoryBlogs.jsx"
 import SiteMap from "./Pages/SiteMap.jsx"
 import Testimonial from "./Pages/Testimonial.jsx"
 import AdminProfile from "./Pages/AdminPanel/AdminProfile.jsx"
-import UpdateProfile from "./components/Admin/updateProfile.jsx"
+import UpdateProfile from "./components/Admin/UpdateProfile.jsx"
 import ProfileLayout from "./layouts/ProfileLayout.jsx"
 import ChangePassword from "./components/Admin/ChangePassword.jsx"
 function App() {
