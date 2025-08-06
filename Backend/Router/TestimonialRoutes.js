@@ -1,14 +1,14 @@
 import express from 'express'
-import { addTestimonials, getEstimates, getTestimonials, submitEstimate,  } from '../Controller/TestimonialController.js';
-
+import { addTestimonials, getEstimates, getTestimonials, submitEstimate, } from '../Controller/TestimonialController.js';
+import cors from 'cors';
 
 
 
 const router = express.Router()
 
-router.post('/create-Testimonials',addTestimonials)
-router.get('/get-testimonials',getTestimonials)
-router.post('/submit-estimate',submitEstimate)
+router.post('/create-Testimonials', cors(),addTestimonials)
+router.get('/get-testimonials', getTestimonials)
+router.post('/submit-estimate', submitEstimate)
 router.get('/get-estimates', getEstimates);
 
 
