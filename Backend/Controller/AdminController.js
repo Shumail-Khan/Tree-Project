@@ -127,7 +127,7 @@ export const updateProfile = async (req, res) => {
         const { username, email } = req.body;
         
         // Find the user (assuming you're using Mongoose)
-        const user = await User.findOne({ username: "admin" }); // Changed from find() to findOne()
+        const user = await User.findOne({ username: "admin1" }); // Changed from find() to findOne()
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }

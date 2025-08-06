@@ -142,6 +142,12 @@ const AdminDashboard = () => {
               link="/admin-dashboard/admin-profile"
               description="Manage existing content"
             />
+            <QuickAction
+              icon={<FiEdit2 className="text-xl mr-2" />}
+              title="Request Testimonials"
+              link="/admin-dashboard/request-testimonials"
+              description="Manage existing content"
+            />
           </div>
         </div>
       </div>
