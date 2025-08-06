@@ -110,9 +110,9 @@ const TreeRemoval = () => {
 
               <div className="md:w-1/2 group overflow-hidden flex justify-center md:justify-end">
                 <img
-                  src="/disease.jpg"
-                  alt="Signs of tree disease"
-                  className="w-full sm:w-4/5 md:w-3/5 h-auto shadow-md transform group-hover:scale-105 transition-transform duration-500"
+                  src="/2.jpg"
+                  alt="Tree Removal"
+                  className="w-full sm:w-4/5 md:w-3/5 h-60 object-bottom object-cover shadow-md transform group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
@@ -271,12 +271,12 @@ const TreeRemoval = () => {
           <div className="relative lg:w-5/12 group shadow-lg shadow-black">
             <div className="absolute w-full h-full top-3 sm:top-4 md:top-5 -left-3 sm:-left-4 md:-left-5 bg-[#afb593] z-0"></div>
             <img
-              src="/tree.jpg"
+              src="/3.jpg"
               alt="Professional tree removal"
-              className="relative w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 z-10"
+              className="relative w-full h-full object-bottom object-cover transform group-hover:scale-105 transition-transform duration-500 z-10"
             />
           </div>
-          <div className="lg:w-full">
+          <div className="lg:w-full pt-10">
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">
               Professional Tree Removal Services with Experienced Arborists in Evansville, IN.
             </h1>
