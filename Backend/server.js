@@ -16,8 +16,10 @@ app.use(express.json());
 
 // Fixed CORS configuration - remove trailing slash from origin
 app.use(cors({
-    origin: process.env.FrontEnd_URL
+    origin: process.env.FrontEnd_URL,
+    credentials: true
 }));
+app.options('/create-Testimonials', cors());
 
 // accept form data
 app.use(express.urlencoded({ extended: true }));

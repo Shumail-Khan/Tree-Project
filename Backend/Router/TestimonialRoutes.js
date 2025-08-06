@@ -6,7 +6,7 @@ import cors from 'cors';
 
 const router = express.Router()
 
-router.post('/create-Testimonials', cors(),addTestimonials)
+router.post('/create-Testimonials', cors(), addTestimonials)
 router.get('/get-testimonials', getTestimonials)
 router.post('/submit-estimate', submitEstimate)
 router.get('/get-estimates', getEstimates);
