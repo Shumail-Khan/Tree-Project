@@ -19,7 +19,6 @@ app.use(cors({
     origin: process.env.FrontEnd_URL,
     credentials: true
 }));
-app.options('/create-Testimonials', cors());
 
 // accept form data
 app.use(express.urlencoded({ extended: true }));
