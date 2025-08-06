@@ -1,18 +1,99 @@
+import { useState } from 'react';
 import { FaFacebookF, FaGoogle, FaInstagram } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Footer = () => {
+    const backendLink = useSelector((state) => state.prod.link);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        serviceRequested: '',
+    });
+    const [formErrors, setFormErrors] = useState({});
+    const [submitStatus, setSubmitStatus] = useState(null); // null, 'submitting', 'success', 'error'
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+        // Reset form status when modal is closed
+        if (!isModalOpen) {
+            setSubmitStatus(null);
+            setFormErrors({});
+            setFormData({
+                fullName: '',
+                email: '',
+                phone: '',
+                serviceRequested: '',
+            });
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // Clear error when user starts typing
+        if (formErrors[name]) {
+            setFormErrors(prev => ({ ...prev, [name]: null }));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        // Validate required fields
+        const errors = {};
+        if (!formData.fullName.trim()) errors.fullName = "Full name is required";
+        if (!formData.email.trim()) {
+            errors.email = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = "Email is invalid";
+        }
+        if (!formData.phone.trim()) errors.phone = "Phone is required";
+        if (!formData.serviceRequested) errors.serviceRequested = "Service is required";
+        
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        try {
+            setSubmitStatus('submitting');
+            const response = await axios.post(`${backendLink}/api/testimonials/submit-estimate`, {
+                fullName: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                serviceRequested: formData.serviceRequested
+            });
+
+            if (response.data.success) {
+                setSubmitStatus('success');
+                // Auto-close after 3 seconds
+                setTimeout(() => {
+                    toggleModal();
+                }, 3000);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            setSubmitStatus('error');
+        }
+    };
+
     return (
         <footer className="w-full">
             {/* CTA Section */}
             <div className="relative">
-                {/* Background image with green tint overlay */}
                 <div className="absolute inset-0 [background-image:linear-gradient(180deg,rgba(27,71,48,0.87)_0%,rgba(27,71,48,0.93)_99%),url('/cta2.jpg')] bg-cover bg-center">
                 </div>
 
-                {/* Content */}
                 <div className="relative z-10 py-12 md:py-16">
                     <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
+                        {/* ... existing CTA content ... */}
                         <div className="mb-6 md:mb-8 max-w-3xl">
                             <h3 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-white px-2">
                                 We Provide Residential and Commercial Tree Services in Evansville, IN & The Surrounding Areas
@@ -25,7 +106,10 @@ const Footer = () => {
                             </a>
                         </div>
                         <div>
-                            <button className="bg-green-600 hover:bg-green-700 hover:rounded-2xl text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300">
+                            <button 
+                                onClick={toggleModal}
+                                className="bg-green-600 hover:bg-green-700 hover:rounded-2xl text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300"
+                            >
                                 REQUEST A FREE ESTIMATE
                             </button>
                         </div>
@@ -33,8 +117,122 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Main Footer Content */}
-            <div className="bg-white py-12 md:py-16">
+            {/* Estimate Request Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold text-gray-800">Get a Free Estimate</h3>
+                            <button 
+                                onClick={toggleModal}
+                                className="text-gray-500 hover:text-gray-700 text-2xl"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        
+                        {submitStatus === 'success' ? (
+                            <div className="text-center py-8">
+                                <div className="text-green-500 text-5xl mb-4">✓</div>
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Thank You!</h3>
+                                <p className="text-gray-600">Your estimate request has been submitted successfully.</p>
+                                <p className="text-gray-600">We'll contact you shortly.</p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Full Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="fullName"
+                                        name="fullName"
+                                        required
+                                        value={formData.fullName}
+                                        onChange={handleInputChange}
+                                        className={`w-full border ${formErrors.fullName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                                    />
+                                    {formErrors.fullName && <p className="mt-1 text-sm text-red-600">{formErrors.fullName}</p>}
+                                </div>
+
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className={`w-full border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                                    />
+                                    {formErrors.email && <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>}
+                                </div>
+
+                                <div>
+                                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Phone *
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phone"
+                                        required
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        className={`w-full border ${formErrors.phone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                                    />
+                                    {formErrors.phone && <p className="mt-1 text-sm text-red-600">{formErrors.phone}</p>}
+                                </div>
+
+                                <div>
+                                    <label htmlFor="serviceRequested" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Service Requested *
+                                    </label>
+                                    <select
+                                        id="serviceRequested"
+                                        name="serviceRequested"
+                                        required
+                                        value={formData.serviceRequested}
+                                        onChange={handleInputChange}
+                                        className={`w-full border ${formErrors.serviceRequested ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                                    >
+                                        <option value="">Select a service</option>
+                                        <option value="TREE REMOVAL">Tree Removal</option>
+                                        <option value="TREE TRIMMING & PRUNING">Tree Trimming & Pruning</option>
+                                        <option value="STRUCTURAL PRUNING">Structural Pruning</option>
+                                        <option value="LAND CLEARING">Land Clearing</option>
+                                        <option value="STORM CLEAN UP">Storm Clean Up</option>
+                                        <option value="COMMERCIAL TREE SERVICES">Commercial Tree Services</option>
+                                    </select>
+                                    {formErrors.serviceRequested && <p className="mt-1 text-sm text-red-600">{formErrors.serviceRequested}</p>}
+                                </div>
+
+                                {submitStatus === 'error' && (
+                                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        There was an error submitting your request. Please try again.
+                                    </div>
+                                )}
+
+                                <div className="pt-2">
+                                    <button
+                                        type="submit"
+                                        disabled={submitStatus === 'submitting'}
+                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {submitStatus === 'submitting' ? 'Submitting...' : 'Submit Request'}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
+
+             <div className="bg-white py-12 md:py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
                         {/* Company Info Section */}
@@ -267,6 +465,9 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Rest of your existing footer content... */}
+            {/* ... keep all other footer sections exactly the same ... */}
         </footer>
     );
 };
