@@ -20,7 +20,7 @@ const Header = () => {
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [showEstimateForm, setShowEstimateForm] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const [isMobile, setIsMobile] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -29,17 +29,53 @@ const Header = () => {
         receiveInfo: false
     });
 
+    // Improved resize handler for Safari compatibility
     useEffect(() => {
+        // Initial check
+        const checkIfMobile = () => {
+            // Use both window.innerWidth and document.documentElement.clientWidth for Safari
+            const width = Math.min(
+                window.innerWidth, 
+                document.documentElement.clientWidth
+            );
+            return width < 1024;
+        };
+        
+        setIsMobile(checkIfMobile());
+
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 1024);
-            if (window.innerWidth >= 1024) {
+            const mobile = checkIfMobile();
+            setIsMobile(mobile);
+            
+            if (!mobile) {
                 setIsMobileMenuOpen(false);
             }
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        // Safari sometimes misses resize events, so we add a debounce
+        const debouncedResize = debounce(handleResize, 100);
+        
+        // Use both resize and orientationchange for Safari
+        window.addEventListener('resize', debouncedResize);
+        window.addEventListener('orientationchange', debouncedResize);
+        
+        return () => {
+            window.removeEventListener('resize', debouncedResize);
+            window.removeEventListener('orientationchange', debouncedResize);
+        };
     }, []);
+
+    // Simple debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
 
     const handleMouseEnter = (menu) => {
         if (!isMobile) {
@@ -178,6 +214,7 @@ const Header = () => {
                             src="/logo.jpg" 
                             alt="American Tree Experts Land Logo" 
                             className="h-20 scale-100 lg:h-25 w-fit object-contain rounded-full shadow-lg shadow-black" 
+                            loading="lazy" // Added for better performance
                         />
                     </a>
                 </div>
@@ -201,8 +238,9 @@ const Header = () => {
                     <button 
                         onClick={toggleMobileMenu}
                         className="lg:hidden text-gray-700 ml-2"
+                        aria-label="Toggle menu"
                     >
-                        <FaBars className="text-xl" />
+                        {isMobileMenuOpen ? <FaXmark className="text-xl" /> : <FaBars className="text-xl" />}
                     </button>
                 </div>
             </div>
@@ -327,122 +365,136 @@ const Header = () => {
 
             {/* Mobile Navigation */}
             {isMobileMenuOpen && (
-                <nav className="bg-[#245B3C] lg:hidden">
-                    <ul className="flex flex-col text-white font-medium">
-                        <li className="hover:bg-[#afb236] border-b border-[#90A995]">
-                            <Link 
-                                to="/" 
-                                className="flex items-center py-3 px-4"
-                                onClick={toggleMobileMenu}
-                            >
-                                HOME
-                            </Link>
-                        </li>
+                <div className="lg:hidden fixed inset-0 z-40">
+                    <div 
+                        className="absolute inset-0 bg-black bg-opacity-50"
+                        onClick={toggleMobileMenu}
+                    ></div>
+                    <nav className="bg-[#245B3C] relative z-50 h-full w-4/5 max-w-sm overflow-y-auto">
+                        <button 
+                            onClick={toggleMobileMenu}
+                            className="absolute top-4 right-4 text-white text-xl"
+                            aria-label="Close menu"
+                        >
+                            <FaXmark />
+                        </button>
+                        
+                        <ul className="flex flex-col text-white font-medium pt-12">
+                            <li className="hover:bg-[#afb236] border-b border-[#90A995]">
+                                <Link 
+                                    to="/" 
+                                    className="flex items-center py-3 px-4"
+                                    onClick={toggleMobileMenu}
+                                >
+                                    HOME
+                                </Link>
+                            </li>
 
-                        <li className="border-b border-[#90A995]">
-                            <div 
-                                className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
-                                onClick={() => toggleDropdown('about')}
-                            >
-                                <span>ABOUT US</span>
-                                {activeDropdown === 'about' ? <FaAngleUp /> : <FaAngleDown />}
-                            </div>
-                            {activeDropdown === 'about' && (
-                                <ul className="bg-[#1a4a2d]">
-                                    {aboutUsItems.map((item, index) => (
-                                        <li key={index} className="border-t border-[#90A995]">
-                                            <Link 
-                                                to={item.path} 
-                                                className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
-                                                onClick={toggleMobileMenu}
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </li>
+                            <li className="border-b border-[#90A995]">
+                                <div 
+                                    className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
+                                    onClick={() => toggleDropdown('about')}
+                                >
+                                    <span>ABOUT US</span>
+                                    {activeDropdown === 'about' ? <FaAngleUp /> : <FaAngleDown />}
+                                </div>
+                                {activeDropdown === 'about' && (
+                                    <ul className="bg-[#1a4a2d]">
+                                        {aboutUsItems.map((item, index) => (
+                                            <li key={index} className="border-t border-[#90A995]">
+                                                <Link 
+                                                    to={item.path} 
+                                                    className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
+                                                    onClick={toggleMobileMenu}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
 
-                        <li className="border-b border-[#90A995]">
-                            <div 
-                                className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
-                                onClick={() => toggleDropdown('services')}
-                            >
-                                <span>SERVICES</span>
-                                {activeDropdown === 'services' ? <FaAngleUp /> : <FaAngleDown />}
-                            </div>
-                            {activeDropdown === 'services' && (
-                                <ul className="bg-[#1a4a2d]">
-                                    {servicesItems.map((item, index) => (
-                                        <li key={index} className="border-t border-[#90A995]">
-                                            <Link 
-                                                to={item.path} 
-                                                className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
-                                                onClick={toggleMobileMenu}
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </li>
+                            <li className="border-b border-[#90A995]">
+                                <div 
+                                    className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
+                                    onClick={() => toggleDropdown('services')}
+                                >
+                                    <span>SERVICES</span>
+                                    {activeDropdown === 'services' ? <FaAngleUp /> : <FaAngleDown />}
+                                </div>
+                                {activeDropdown === 'services' && (
+                                    <ul className="bg-[#1a4a2d]">
+                                        {servicesItems.map((item, index) => (
+                                            <li key={index} className="border-t border-[#90A995]">
+                                                <Link 
+                                                    to={item.path} 
+                                                    className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
+                                                    onClick={toggleMobileMenu}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
 
-                        <li className="border-b border-[#90A995]">
-                            <div 
-                                className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
-                                onClick={() => toggleDropdown('areas')}
-                            >
-                                <span>SERVICE AREAS</span>
-                                {activeDropdown === 'areas' ? <FaAngleUp /> : <FaAngleDown />}
-                            </div>
-                            {activeDropdown === 'areas' && (
-                                <ul className="bg-[#1a4a2d]">
-                                    {serviceAreasItems.map((item, index) => (
-                                        <li key={index} className="border-t border-[#90A995]">
-                                            <Link 
-                                                to={item.path} 
-                                                className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
-                                                onClick={toggleMobileMenu}
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </li>
+                            <li className="border-b border-[#90A995]">
+                                <div 
+                                    className="flex items-center justify-between py-3 px-4 hover:bg-[#afb236] cursor-pointer"
+                                    onClick={() => toggleDropdown('areas')}
+                                >
+                                    <span>SERVICE AREAS</span>
+                                    {activeDropdown === 'areas' ? <FaAngleUp /> : <FaAngleDown />}
+                                </div>
+                                {activeDropdown === 'areas' && (
+                                    <ul className="bg-[#1a4a2d]">
+                                        {serviceAreasItems.map((item, index) => (
+                                            <li key={index} className="border-t border-[#90A995]">
+                                                <Link 
+                                                    to={item.path} 
+                                                    className="hover:bg-[#afb236] transition-colors duration-200 block py-2 px-8"
+                                                    onClick={toggleMobileMenu}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
 
-                        <li className="hover:bg-[#afb236] border-b border-[#90A995]">
-                            <Link 
-                                to="/photo-gallery" 
-                                className="flex items-center py-3 px-4"
-                                onClick={toggleMobileMenu}
-                            >
-                                PHOTO GALLERY
-                            </Link>
-                        </li>
-                        <li className="hover:bg-[#afb236] border-b border-[#90A995]">
-                            <Link 
-                                to="/contact-us" 
-                                className="flex items-center py-3 px-4"
-                                onClick={toggleMobileMenu}
-                            >
-                                CONTACT US
-                            </Link>
-                        </li>
-                        <li className="hover:bg-[#afb236] border-b border-[#90A995]">
-                            <Link 
-                                to="/blog" 
-                                className="flex items-center py-3 px-4"
-                                onClick={toggleMobileMenu}
-                            >
-                                BLOG
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
+                            <li className="hover:bg-[#afb236] border-b border-[#90A995]">
+                                <Link 
+                                    to="/photo-gallery" 
+                                    className="flex items-center py-3 px-4"
+                                    onClick={toggleMobileMenu}
+                                >
+                                    PHOTO GALLERY
+                                </Link>
+                            </li>
+                            <li className="hover:bg-[#afb236] border-b border-[#90A995]">
+                                <Link 
+                                    to="/contact-us" 
+                                    className="flex items-center py-3 px-4"
+                                    onClick={toggleMobileMenu}
+                                >
+                                    CONTACT US
+                                </Link>
+                            </li>
+                            <li className="hover:bg-[#afb236] border-b border-[#90A995]">
+                                <Link 
+                                    to="/blog" 
+                                    className="flex items-center py-3 px-4"
+                                    onClick={toggleMobileMenu}
+                                >
+                                    BLOG
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             )}
 
             {/* Estimate Request Modal */}
@@ -452,6 +504,7 @@ const Header = () => {
                         <button
                             onClick={toggleEstimateForm}
                             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            aria-label="Close estimate form"
                         >
                             <FaXmark className="text-xl" />
                         </button>
