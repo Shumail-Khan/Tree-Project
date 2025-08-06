@@ -42,8 +42,6 @@ app.use('/api/request', requestRoutes);
 app.use('/api/dashboard/', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 
-
-console.log("Backend URL:", process.env.FrontEnd_URL);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
