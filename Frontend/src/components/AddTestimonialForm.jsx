@@ -29,7 +29,7 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
 
     try {
       const response = await axios.post(
-        `${backendLink}/api/testimonials/create-Testimonials`,
+        `${backendLink}/api/testimonials/create-testimonials`,
         formData
       );
       onTestimonialSubmit(response.data); // Update parent component
