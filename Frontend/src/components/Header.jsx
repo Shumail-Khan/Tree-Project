@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {useSelector} from 'react-redux';
 import {
     FaFacebookF,
     FaPhoneVolume,
@@ -14,6 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 
 const Header = () => {
+    const backendLink = useSelector((state) => state.prod.link);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [showEstimateForm, setShowEstimateForm] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,9 +75,18 @@ const Header = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
+        try{
+            const response = await axios.post(`${backendLink}/api/testimonials/submit-estimate`, formData);
+            console.log("Form submitted successfully:", response.data);
+            if (response.status === 201) {
+                alert('Estimate submitted successfully! We will contact you soon.');
+            }
+
+        }catch(err){
+            console.error("Error submitting form:", err);
+        }
         setShowEstimateForm(false);
         setFormData({
             fullName: '',

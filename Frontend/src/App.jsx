@@ -40,6 +40,7 @@ import AdminProfile from "./Pages/AdminPanel/AdminProfile.jsx"
 import UpdateProfile from "./components/Admin/UpdateProfile.jsx"
 import ProfileLayout from "./layouts/ProfileLayout.jsx"
 import ChangePassword from "./components/Admin/ChangePassword.jsx"
+import RequestTestemonail from "./components/Admin/RequestEstimate.jsx"
 function App() {
   return (
     <div className="">
@@ -90,6 +91,7 @@ function App() {
           <Route path="/admin-dashboard/add-category" element={<AddCategory />} />
           <Route path="/admin-dashboard/delete-category" element={<DeleteCategory />} />
           <Route path="/admin-dashboard/job-requests" element={<JobRequests />} />
+          <Route path="/admin-dashboard/request-testimonials" element={<RequestTestemonail />} />
           <Route index element={<ProfileLayout />} />
             <Route path="/admin-dashboard/admin-profile" element={<AdminProfile />} />
             <Route path="/update-profile" element={<UpdateProfile />} />

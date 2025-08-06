@@ -1,35 +1,26 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaChevronLeft, FaChevronRight, FaTimes } from "react-icons/fa";
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const ITEMS_PER_PAGE = 12;
 
 const PhotoGallery = () => {
-    const [pictures, setPictures] = useState([]);
+    const pictures = [
+        { src: '/public/tree-1.jpeg' },
+        { src: '/public/tree-2.jpeg' },
+        { src: '/public/tree-3.jpeg' },
+        { src: '/public/tree-4.jpeg' },
+        { src: '/public/tree-5.jpeg' },
+        { src: '/public/tree-6.jpeg' },
+        { src: '/public/tree-7.jpeg' },
+        { src: '/public/tree-8.jpeg' },
+    ];
+   
     const backendLink = useSelector((state) => state.prod.link);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
     const [currentPage, setCurrentPage] = useState(1);
-
-    const getBlog = async () => {
-        try {
-            const response = await axios.get(`${backendLink}/api/blog/get-blogs`);
-            if (response.data.success) {
-                const filteredImages = response.data.blog.filter(blog => blog.image);
-                setPictures(filteredImages);
-            } else {
-                console.error("Failed to fetch blogs:", response.data.message);
-            }
-        } catch (error) {
-            console.error("Error fetching blogs:", error);
-        }
-    }
-
-    useEffect(() => {
-        getBlog();
-    }, []);
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
@@ -112,7 +103,7 @@ const PhotoGallery = () => {
 
                     <div className="max-w-4xl w-full mx-4 md:mx-16 text-center">
                         <img
-                            src={`${backendLink}/${pictures[currentImageIndex]?.image}`}
+                            src={pictures[currentImageIndex]?.src}
                             alt={pictures[currentImageIndex]?.title || "Gallery Image"}
                             className="max-h-[80vh] w-full object-contain"
                             loading="lazy"
@@ -149,7 +140,7 @@ const PhotoGallery = () => {
             {/* Gallery */}
             <div className="w-full py-6 md:py-10 px-4 sm:px-6">
                 <div className="w-full max-w-6xl mx-auto py-6 md:py-10">
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pb-10 md:pb-20 border-b-2 border-b-[#666]">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pb-10 md:pb-20 ">
                         {currentImages.map((image, index) => (
                             <div
                                 key={index}
@@ -157,15 +148,14 @@ const PhotoGallery = () => {
                                 onClick={() => openLightbox(index)}
                                 tabIndex="0"
                                 onKeyDown={(e) => e.key === 'Enter' && openLightbox(index)}
-                                aria-label={`View ${backendLink}/${image.image}`}
+                                aria-label={`View image ${index + 1}`}
                             >
                                 <img
                                     loading="lazy"
                                     decoding="async"
-                                    src={`${backendLink}/${image.image}`}
-                                    alt={image.title || `Photo Gallery Image ${index + 1}`}
-                                    title={image.title}
-                                    className="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover border-4 border-black shadow-lg shadow-[#333] group-hover:opacity-80 transition-opacity"
+                                    src={image.src}
+                                    alt={`Photo Gallery Image ${index + 1}`}
+                                    className="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover   group-hover:opacity-80 transition-opacity"
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <div className="bg-[#afb236] bg-opacity-50 rounded-full p-2 sm:p-3">
@@ -177,38 +167,40 @@ const PhotoGallery = () => {
                     </div>
 
                     {/* Pagination */}
-                    <div className="mt-6 flex justify-center sm:justify-end">
-                        <div className="flex border border-[#444] divide-x divide-[#444] text-xs sm:text-sm">
-                            {currentPage > 1 && (
-                                <button
-                                    onClick={() => goToPage(currentPage - 1)}
-                                    className="px-3 sm:px-4 py-2 bg-[#222] text-white hover:bg-white hover:text-black"
-                                >
-                                    Prev
-                                </button>
-                            )}
-                            {[...Array(totalPages).keys()].map((num) => (
-                                <button
-                                    key={num}
-                                    onClick={() => goToPage(num + 1)}
-                                    className={`px-3 sm:px-4 py-2 ${currentPage === num + 1
-                                        ? "bg-[#222] text-[#afb236] font-semibold"
-                                        : "bg-[#222] text-white hover:text-black"
-                                        }`}
-                                >
-                                    {num + 1}
-                                </button>
-                            ))}
-                            {currentPage < totalPages && (
-                                <button
-                                    onClick={() => goToPage(currentPage + 1)}
-                                    className="px-3 sm:px-4 py-2 bg-[#222] text-white hover:bg-white hover:text-black"
-                                >
-                                    Next
-                                </button>
-                            )}
+                    {totalPages > 1 && (
+                        <div className="mt-6 flex justify-center sm:justify-end">
+                            <div className="flex border border-[#444] divide-x divide-[#444] text-xs sm:text-sm">
+                                {currentPage > 1 && (
+                                    <button
+                                        onClick={() => goToPage(currentPage - 1)}
+                                        className="px-3 sm:px-4 py-2 bg-[#222] text-white hover:bg-white hover:text-black"
+                                    >
+                                        Prev
+                                    </button>
+                                )}
+                                {[...Array(totalPages).keys()].map((num) => (
+                                    <button
+                                        key={num}
+                                        onClick={() => goToPage(num + 1)}
+                                        className={`px-3 sm:px-4 py-2 ${currentPage === num + 1
+                                            ? "bg-[#222] text-[#afb236] font-semibold"
+                                            : "bg-[#222] text-white hover:text-black"
+                                            }`}
+                                    >
+                                        {num + 1}
+                                    </button>
+                                ))}
+                                {currentPage < totalPages && (
+                                    <button
+                                        onClick={() => goToPage(currentPage + 1)}
+                                        className="px-3 sm:px-4 py-2 bg-[#222] text-white hover:bg-white hover:text-black"
+                                    >
+                                        Next
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

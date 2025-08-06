@@ -83,9 +83,7 @@ const Home = () => {
               residential <br className="hidden sm:block" />
               and commercial properties of any size.
             </p>
-            <button className="bg-lime-600 hover:bg-lime-700 hover:rounded text-white font-bold py-3 px-6 mb-10 md:mb-20 rounded-3xl transition duration-300">
-              REQUEST A FREE ESTIMATE
-            </button>
+            
           </div>
         </div>
       </div>
@@ -375,9 +373,7 @@ const Home = () => {
               812-457-3433
             </a>
             <div className="mt-6 md:mt-12">
-              <button className="bg-lime-600 hover:bg-lime-700 hover:rounded text-white font-bold py-3 px-6 rounded-3xl transition duration-300">
-                REQUEST A FREE ESTIMATE
-              </button>
+              
             </div>
           </div>
         </section>
