@@ -22,7 +22,11 @@ const UpdateProfile = () => {
     try {
       setLoading(prev => ({ ...prev, fetch: true }));
       setError(null);
-      const response = await axios.get(`${backendLink}/api/admin/admin-profile`);
+      const response = await axios.get(`${backendLink}/api/admin/admin-profile`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('admin-token')}`
+        }
+      });
       setProfileData(response.data);
       setFormData({
         username: response.data.username,
@@ -57,19 +61,19 @@ const UpdateProfile = () => {
 
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.username.trim()) {
       errors.username = "Username is required";
     } else if (formData.username.length < 3) {
       errors.username = "Username must be at least 3 characters";
     }
-    
+
     if (!formData.email.trim()) {
       errors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = "Please enter a valid email address";
     }
-    
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -78,22 +82,24 @@ const UpdateProfile = () => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-    
+
     if (!validateForm()) return;
-    
+
     try {
       setLoading(prev => ({ ...prev, submit: true }));
-      
+
       const response = await axios.put(
         `${backendLink}/api/admin/update-profile`,
         formData,
         {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('admin-token')}`
+
           }
         }
       );
-      
+
       if (response.status === 200) {
         setSuccess(true);
         fetchProfileData(); // Refresh profile data
@@ -101,9 +107,9 @@ const UpdateProfile = () => {
       }
     } catch (error) {
       console.error("Update failed:", error);
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          "Failed to update profile. Please try again.";
+      const errorMessage = error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Failed to update profile. Please try again.";
       setError(errorMessage);
     } finally {
       setLoading(prev => ({ ...prev, submit: false }));
@@ -127,7 +133,7 @@ const UpdateProfile = () => {
         <h1 className="text-2xl font-bold text-gray-800">Update Profile</h1>
         <p className="text-gray-600 mt-1">Manage your account information</p>
       </div>
-      
+
       {error && (
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded">
           <div className="flex">
@@ -142,7 +148,7 @@ const UpdateProfile = () => {
           </div>
         </div>
       )}
-      
+
       {success && (
         <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded">
           <div className="flex">
@@ -174,9 +180,8 @@ const UpdateProfile = () => {
                 type="text"
                 value={formData.username}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  validationErrors.username ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${validationErrors.username ? "border-red-300" : "border-gray-300"
+                  }`}
                 required
               />
             </div>
@@ -184,7 +189,7 @@ const UpdateProfile = () => {
               <p className="mt-1 text-sm text-red-600">{validationErrors.username}</p>
             )}
           </div>
-          
+
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -199,9 +204,8 @@ const UpdateProfile = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  validationErrors.email ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${validationErrors.email ? "border-red-300" : "border-gray-300"
+                  }`}
                 required
               />
             </div>
@@ -209,14 +213,13 @@ const UpdateProfile = () => {
               <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
             )}
           </div>
-          
+
           <div className="pt-2">
             <button
               type="submit"
               disabled={loading.submit}
-              className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                loading.submit ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-              }`}
+              className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading.submit ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                }`}
             >
               {loading.submit ? (
                 <>

@@ -103,21 +103,13 @@ export const updateBlog = async (req, res) => {
 
 export const getAdmin = async (req, res) => {
     try {
-
-        const admin = await User.find({ username: "admin1"  }).select("-password -__v");
-        if (!admin || admin.length === 0) {
+        const admin = await User.findById(req.user._id).select("-password -__v");
+        if (!admin) {
             return res.status(404).json({ message: 'Admin not found' });
         }
-        // Assuming you want to return the first admin found
-        // If you expect multiple admins, you might want to adjust this logic
-        const foundAdmin = admin[0];
-        if (!foundAdmin) {
-            return res.status(404).json({ message: 'Admin not found' });
-        }
-        return res.status(200).json(foundAdmin);
+        return res.status(200).json(admin);
     } catch (error) {
-        console.error('Error fetching admin:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }
 
@@ -125,9 +117,10 @@ export const getAdmin = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { username, email } = req.body;
-        
+
         // Find the user (assuming you're using Mongoose)
-        const user = await User.findOne({ username: "admin1" }); // Changed from find() to findOne()
+
+        const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -137,17 +130,16 @@ export const updateProfile = async (req, res) => {
         if (email) user.email = email;
 
         await user.save();
-        return res.status(200).json({ 
-            message: 'Profile updated successfully', 
+        return res.status(200).json({
+            message: 'Profile updated successfully',
             user: {
                 username: user.username,
                 email: user.email
                 // Don't send sensitive data like password
-            } 
+            }
         });
     } catch (error) {
-        console.error('Error updating profile:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }
 
@@ -200,7 +192,7 @@ export const changePassword = async (req, res) => {
         }
 
         // Find user (better to use ID from authenticated session)
-        const user = await User.findOne({ username: "admin1" });
+        const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -218,7 +210,6 @@ export const changePassword = async (req, res) => {
 
         return res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
-        console.error('Error changing password:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }

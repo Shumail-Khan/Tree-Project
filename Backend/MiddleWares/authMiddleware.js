@@ -1,9 +1,10 @@
-import User from "../Model/UserModel.js";
+import User from "../Model/AdminModel.js";
 import jwt from "jsonwebtoken";
 
 const authMiddleware = {
   verifyToken: async (req, res, next) => {
-    const token = req.cookies.tree-project;
+    const token = req.headers.authorization.split(" ")[1];
+    
     if (!token) {
       return res.status(401).json({ message: "Unauthorized (Middleware Error) " });
     }

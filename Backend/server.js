@@ -8,7 +8,7 @@ import requestRoutes from './Router/RequestRoutes.js';
 import path from 'path';
 import dashboardRoutes from './Router/DashboardRoutes.js';
 import testimonialRoutes from './Router/TestimonialRoutes.js';
-import serverless from 'serverless-http';
+// import serverless from 'serverless-http';
 
 let app = express();
 connectDB();
@@ -17,10 +17,11 @@ app.use(express.json());
 
 // Fixed CORS configuration - remove trailing slash from origin
 app.use(cors({
-    origin: `${process.env.FrontEnd_URL}`,
-    withCredentials: true,
+    // origin: `${process.env.FrontEnd_URL}`,
+    origin: process.env.FrontEnd_URL,
+    // withCredentials: true,
     credentials: true,
-    accessControlAllowCredentials: true
+    // accessControlAllowCredentials: true
 }));
 
 // accept form data
@@ -41,14 +42,20 @@ app.use('/api/request', requestRoutes);
 app.use('/api/dashboard/', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 
+
+console.log("Backend URL:", process.env.FrontEnd_URL);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 // For Local Development
-if (process.env.NODE_ENV !== "production") {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
-console.log("Running in", process.env.NODE_ENV);
-console.log("Vercel?", process.env.VERCEL);
+// if (process.env.NODE_ENV !== "production") {
+//     const PORT = process.env.PORT || 5000;
+//     app.listen(PORT, () => {
+//         console.log(`Server running on port ${PORT}`);
+//     });
+// }
+// console.log("Running in", process.env.NODE_ENV);
+// console.log("Vercel?", process.env.VERCEL);
 // For Vercel Deployment
-export default serverless(app);
+// export default serverless(app);

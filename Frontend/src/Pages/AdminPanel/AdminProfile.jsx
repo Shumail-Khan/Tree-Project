@@ -15,7 +15,11 @@ const AdminProfile = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`${backendLink}/api/admin/admin-profile`);
+      const response = await axios.get(`${backendLink}/api/admin/admin-profile`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('admin-token')}`
+                }
+            });
       setProfileData(response.data);
     } catch (error) {
       console.error("Failed to fetch profile data:", error);

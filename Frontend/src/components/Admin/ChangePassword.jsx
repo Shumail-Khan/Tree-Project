@@ -46,7 +46,7 @@ const ChangePassword = () => {
 
   const validate = () => {
     const newErrors = {};
-    
+
     if (!formData.currentPassword) {
       newErrors.currentPassword = 'Current password is required';
     }
@@ -60,7 +60,7 @@ const ChangePassword = () => {
     } else if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -68,7 +68,7 @@ const ChangePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess(false);
-    
+
     if (!validate()) return;
 
     setLoading(true);
@@ -78,11 +78,12 @@ const ChangePassword = () => {
         formData,
         {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('admin-token')}`
           }
         }
       );
-      
+
       if (response.status === 200) {
         setSuccess(true);
         setFormData({
@@ -95,9 +96,9 @@ const ChangePassword = () => {
       }
     } catch (error) {
       console.error('Password change failed:', error);
-      const errorMsg = error.response?.data?.message || 
-                      error.response?.data?.error || 
-                      'Failed to change password. Please try again.';
+      const errorMsg = error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to change password. Please try again.';
       setErrors(prev => ({ ...prev, server: errorMsg }));
     } finally {
       setLoading(false);
@@ -120,7 +121,7 @@ const ChangePassword = () => {
         </button>
         <h1 className="text-2xl font-bold text-gray-800">Change Password</h1>
       </div>
-      
+
       {/* Error Message */}
       {errors.server && (
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded">
@@ -134,7 +135,7 @@ const ChangePassword = () => {
           </div>
         </div>
       )}
-      
+
       {/* Success Message */}
       {success && (
         <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded">
@@ -165,9 +166,8 @@ const ChangePassword = () => {
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
-              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.currentPassword ? 'border-red-300' : 'border-gray-300'
-              }`}
+              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${errors.currentPassword ? 'border-red-300' : 'border-gray-300'
+                }`}
               autoComplete="current-password"
             />
           </div>
@@ -191,9 +191,8 @@ const ChangePassword = () => {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.newPassword ? 'border-red-300' : 'border-gray-300'
-              }`}
+              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${errors.newPassword ? 'border-red-300' : 'border-gray-300'
+                }`}
               autoComplete="new-password"
             />
           </div>
@@ -217,9 +216,8 @@ const ChangePassword = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
-              }`}
+              className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                }`}
               autoComplete="new-password"
             />
           </div>
@@ -256,9 +254,8 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-              loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+            className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
           >
             {loading ? (
               <>
