@@ -252,7 +252,7 @@ const Footer = () => {
                             </div>
                             <div className="flex space-x-3">
                                 <a
-                                    href="https://www.facebook.com/kenstrees"
+                                    href="https://www.facebook.com/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     title="Follow on Facebook"
@@ -262,7 +262,7 @@ const Footer = () => {
                                     <FaFacebookF size={16} />
                                 </a>
                                 <a
-                                    href="https://search.google.com/local/writereview?placeid=ChIJU-pP1XeNwogR1JU0sbJZtbU"
+                                    href="/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     title="Follow on Google"
@@ -272,7 +272,7 @@ const Footer = () => {
                                     <FaGoogle size={16} />
                                 </a>
                                 <a
-                                    href="https://www.instagram.com/kenstreeserviceinc/"
+                                    href="https://www.instagram.com/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     title="Follow on Instagram"

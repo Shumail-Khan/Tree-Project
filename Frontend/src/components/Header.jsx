@@ -160,7 +160,7 @@ const Header = () => {
             <div className='mx-4 lg:mx-10 py-2 lg:py-4 items-center flex justify-between text-xs lg:text-sm'>
                 <div className='flex space-x-2 lg:space-x-4'>
                     <a
-                        href="https://www.facebook.com/kenstrees"
+                        href="https://www.facebook.com"
                         target="_blank"
                         rel="noopener noreferrer"
                         title="Follow on Facebook"
@@ -169,7 +169,7 @@ const Header = () => {
                         <FaFacebookF />
                     </a>
                     <a
-                        href="https://search.google.com/local/writereview?placeid=ChIJU-pP1XeNwogR1JU0sbJZtbU"
+                        href="/"
                         target="_blank"
                         rel="noopener noreferrer"
                         title="Follow on Google"
@@ -178,7 +178,7 @@ const Header = () => {
                         <FaGoogle />
                     </a>
                     <a
-                        href="https://www.instagram.com/kenstreeserviceinc/"
+                        href="https://www.instagram.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         title="Follow on Instagram"
