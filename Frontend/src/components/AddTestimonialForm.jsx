@@ -22,49 +22,19 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
     setFormData({ ...formData, rating });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError("");
-
-    try { 
-      const response = await axios.post(
-        `${backendLink}/api/testimonials/create-testimonials`,
-        formData,
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-      );
-      onTestimonialSubmit(response.data); // Update parent component
-      setFormData({ name: "", rating: 5, content: "" }); // Reset form
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to submit testimonial");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-  
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   setSubmitting(true);
   //   setError("");
 
-  //   try {
-  //     // Create a FormData object and append fields
-  //     const data = new FormData();
-  //     data.append("name", formData.name);
-  //     data.append("rating", formData.rating);
-  //     data.append("content", formData.content);
-
+  //   try { 
   //     const response = await axios.post(
   //       `${backendLink}/api/testimonials/create-testimonials`,
-  //       data,
+  //       formData,
   //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data"
-  //         }
+  //           headers: {
+  //               'Content-Type': 'application/json'
+  //           }
   //       }
   //     );
   //     onTestimonialSubmit(response.data); // Update parent component
@@ -75,6 +45,36 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
   //     setSubmitting(false);
   //   }
   // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+
+    try {
+      // Create a FormData object and append fields
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("rating", formData.rating);
+      data.append("content", formData.content);
+
+      const response = await axios.post(
+        `${backendLink}/api/testimonials/create-testimonials`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      );
+      onTestimonialSubmit(response.data); // Update parent component
+      setFormData({ name: "", rating: 5, content: "" }); // Reset form
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to submit testimonial");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
