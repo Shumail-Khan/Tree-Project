@@ -27,10 +27,15 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
     setSubmitting(true);
     setError("");
 
-    try {
+    try { 
       const response = await axios.post(
         `${backendLink}/api/testimonials/create-testimonials`,
-        formData
+        formData,
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
       );
       onTestimonialSubmit(response.data); // Update parent component
       setFormData({ name: "", rating: 5, content: "" }); // Reset form
@@ -40,6 +45,36 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
       setSubmitting(false);
     }
   };
+  
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setSubmitting(true);
+  //   setError("");
+
+  //   try {
+  //     // Create a FormData object and append fields
+  //     const data = new FormData();
+  //     data.append("name", formData.name);
+  //     data.append("rating", formData.rating);
+  //     data.append("content", formData.content);
+
+  //     const response = await axios.post(
+  //       `${backendLink}/api/testimonials/create-testimonials`,
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data"
+  //         }
+  //       }
+  //     );
+  //     onTestimonialSubmit(response.data); // Update parent component
+  //     setFormData({ name: "", rating: 5, content: "" }); // Reset form
+  //   } catch (err) {
+  //     setError(err.response?.data?.message || "Failed to submit testimonial");
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -75,9 +110,8 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
                 className="focus:outline-none"
               >
                 <FaStar
-                  className={`text-2xl ${
-                    star <= formData.rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
+                  className={`text-2xl ${star <= formData.rating ? "text-yellow-400" : "text-gray-300"
+                    }`}
                 />
               </button>
             ))}
@@ -104,9 +138,8 @@ const AddTestimonialForm = ({ onTestimonialSubmit }) => {
         <button
           type="submit"
           disabled={submitting}
-          className={`bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition ${
-            submitting ? "opacity-70 cursor-not-allowed" : ""
-          }`}
+          className={`bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition ${submitting ? "opacity-70 cursor-not-allowed" : ""
+            }`}
         >
           {submitting ? "Submitting..." : "Submit Review"}
         </button>
