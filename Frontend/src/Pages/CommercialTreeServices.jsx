@@ -331,7 +331,7 @@ const CommercialTreeServices = () => {
             <img 
               loading="lazy" 
               decoding="async" 
-              src="/Tree-Services.jpg" 
+              src="/treeEmergency.jpeg"
               alt="Contact us for tree services" 
               className="relative w-full h-auto md:h-full object-cover transform group-hover:scale-105 transition-transform duration-500 z-10" 
             />

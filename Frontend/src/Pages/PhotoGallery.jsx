@@ -14,6 +14,12 @@ const PhotoGallery = () => {
         { src: '/public/tree-6.jpeg' },
         { src: '/public/tree-7.jpeg' },
         { src: '/public/tree-8.jpeg' },
+        { src: '/public/photo-gal3.jpeg' },
+        { src: '/public/photo-gal4.jpeg' },
+        { src: '/public/photo-gal5.jpeg' },
+        { src: '/public/photo-gal6.jpeg' },
+        { src: '/public/photo-gal7.jpeg' },
+        { src: '/public/photo-gal8.jpeg' }
     ];
    
     const backendLink = useSelector((state) => state.prod.link);
