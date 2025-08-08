@@ -6,20 +6,20 @@ const ITEMS_PER_PAGE = 12;
 
 const PhotoGallery = () => {
     const pictures = [
-        { src: '/public/tree-1.jpeg' },
-        { src: '/public/tree-2.jpeg' },
-        { src: '/public/tree-3.jpeg' },
-        { src: '/public/tree-4.jpeg' },
-        { src: '/public/tree-5.jpeg' },
-        { src: '/public/tree-6.jpeg' },
-        { src: '/public/tree-7.jpeg' },
-        { src: '/public/tree-8.jpeg' },
-        { src: '/public/photo-gal3.jpeg' },
-        { src: '/public/photo-gal4.jpeg' },
-        { src: '/public/photo-gal5.jpeg' },
-        { src: '/public/photo-gal6.jpeg' },
-        { src: '/public/photo-gal7.jpeg' },
-        { src: '/public/photo-gal8.jpeg' }
+        { src: '/tree-1.jpeg' },
+        { src: '/tree-2.jpeg' },
+        { src: '/tree-3.jpeg' },
+        { src: '/tree-4.jpeg' },
+        { src: '/tree-5.jpeg' },
+        { src: '/tree-6.jpeg' },
+        { src: '/tree-7.jpeg' },
+        { src: '/tree-8.jpeg' },
+        { src: '/photo-gal3.jpeg' },
+        { src: '/photo-gal4.jpeg' },
+        { src: '/photo-gal5.jpeg' },
+        { src: '/photo-gal6.jpeg' },
+        { src: '/photo-gal7.jpeg' },
+        { src: '/photo-gal8.jpeg' }
     ];
    
     const backendLink = useSelector((state) => state.prod.link);
