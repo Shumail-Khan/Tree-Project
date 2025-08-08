@@ -324,16 +324,15 @@ const CommercialTreeServices = () => {
         </div>
       </div>
 
-      <div className="w-11/12 md:w-10/12 mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-11/12 md:w-10/12 mx-20 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 mt-12 md:mt-16 mb-12 md:mb-16">
-          <div className="relative lg:w-7/12 group shadow-lg shadow-black">
-            <div className="absolute w-full h-full top-3 md:top-4 -left-3 md:-left-4 bg-[#afb593] z-0"></div>
+          <div>
             <img 
               loading="lazy" 
               decoding="async" 
               src="/treeEmergency.jpeg"
               alt="Contact us for tree services" 
-              className="relative w-full h-auto md:h-full object-cover transform group-hover:scale-105 transition-transform duration-500 z-10" 
+              className="relative w-[900px] mt-15 h-[1000px] md:h-[300px] object-cover transform transition-transform duration-500   " 
             />
           </div>
           <div className="lg:w-full pb-5">
