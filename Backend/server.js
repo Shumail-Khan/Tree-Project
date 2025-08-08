@@ -8,20 +8,16 @@ import requestRoutes from './Router/RequestRoutes.js';
 import path from 'path';
 import dashboardRoutes from './Router/DashboardRoutes.js';
 import testimonialRoutes from './Router/TestimonialRoutes.js';
-// import serverless from 'serverless-http';
 
 let app = express();
 connectDB();
 
-app.use(express.json());
-
 // Fixed CORS configuration - remove trailing slash from origin
 app.use(cors({
-    // origin: `${process.env.FrontEnd_URL}`,
     origin: process.env.FrontEnd_URL,
-    // withCredentials: true,
     credentials: true,
-    // accessControlAllowCredentials: true
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // accept form data
@@ -42,9 +38,8 @@ app.use('/api/request', requestRoutes);
 app.use('/api/dashboard/', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
 });
 // For Local Development
 // if (process.env.NODE_ENV !== "production") {
