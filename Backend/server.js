@@ -26,6 +26,8 @@ app.use(express.json());
 
 // for multer
 app.use(express.static(path.join(path.resolve(), 'public/uploads')));
+// app.use('/uploads', express.static(path.join(path.resolve(), 'public/uploads')));
+
 
 app.get('/', (req, res) => {
     res.send('Hello World');
