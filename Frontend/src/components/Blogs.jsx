@@ -19,6 +19,7 @@ const Blogs = () => {
     try {
       setLoading(true);
       const response = await axios.get(`${backendLink}/api/blog/get-blogs`);
+      // console.log("Blog posts fetched:", response.data.blog);
       setBlogPosts(response.data.blog);
     } catch (error) {
       console.error("Error fetching blog posts:", error);
